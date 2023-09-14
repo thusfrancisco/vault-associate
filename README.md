@@ -31,3 +31,20 @@ On Linux, to give the Vault executable the ability to use the `mlock` syscall wi
 ```sh
 sudo setcap cap_ipc_lock=+ep $(readlink -f $(which vault))
 ```
+
+# CLI
+
+Set the environment variable `VAULT_FORMAT` to `json` before making CLI calls to make Vault produce all its outputs in the JSON format.
+
+# Choosing an auth method
+
+For:
+- Credentials that need to be frequently rotated, use a dynamic credential:
+    - AWS, LDAP, Azure, GCP, K8s.
+    - NOT Userpass, TLS, AppRole.
+- Secrets that must be removed from a process or build pipeline:
+    - AWS, Azure, GCP, K8s.
+    - NOT Userpass, LDAP.
+- Existing user credentials, integrate with an existing IdP (without creating new credentials):
+    - OIDC, LDAP, Okta, GitHub.
+    - NOT Userpass, AWS, Azure, GCP.
