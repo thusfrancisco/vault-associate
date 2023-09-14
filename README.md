@@ -18,3 +18,16 @@ Not having to use Consul makes it considerably simpler, and removes another pote
 
 Only string secrets are encrypted.
 For this reason, HashiCorp recommends that all data sent to the Vault is first converted to a string.
+
+# Configuration
+
+Disabling `mlock` is strongly recommended if using integrated storage,
+because `mlock` does not interact well with memory-mapped files such as those created by BoltDB,
+which is used by Raft to track state.
+When using `mlock`, m-mapped files get loaded into resident memory which causes Vault's entire dataset to be loaded in-memory and cause out-of-memory issues if Vault's data becomes larger than the available RAM.
+In this case, even though the data within BoltDB remains encrypted at rest, swap should be disabled to prevent Vault's other in-memory sensitive data from being dumped into disk.
+
+On Linux, to give the Vault executable the ability to use the `mlock` syscall without running the process as root, run:
+```sh
+sudo setcap cap_ipc_lock=+ep $(readlink -f $(which vault))
+```
