@@ -32,6 +32,12 @@ On Linux, to give the Vault executable the ability to use the `mlock` syscall wi
 sudo setcap cap_ipc_lock=+ep $(readlink -f $(which vault))
 ```
 
+In order to assess the correctness of a configuration file, consider running the command:
+
+```bash
+vault operator diagnose -config=/etc/vault.d/vault.hcl
+```
+
 # CLI
 
 Set the environment variable `VAULT_FORMAT` to `json` before making CLI calls to make Vault produce all its outputs in the JSON format.
@@ -48,3 +54,14 @@ For:
 - Existing user credentials, integrate with an existing IdP (without creating new credentials):
     - OIDC, LDAP, Okta, GitHub.
     - NOT Userpass, AWS, Azure, GCP.
+
+# Policies
+
+## Pathing wildcards
+
+The `*` glob works in the traditional way.
+
+The `+` character supports wildcard matching for a single directory in the path, e.g. ``kv/data/apps/+/webapp`` supports:
+- `kv/data/apps/dev/webapp`
+- `kv/data/apps/qa/webapp`
+- `kv/data/apps/prod/webapp`
