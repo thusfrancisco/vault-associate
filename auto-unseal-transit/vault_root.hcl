@@ -9,6 +9,9 @@ cluster_name = "vault-prod-us-east-1"
 disable_mlock = true
 log_level = "INFO"
 
+# Usage
+default_lease_ttl = 24h
+
 storage "raft" {
   path    = "/opt/vault/data"
   node_id = "node-a-us-east-1.example.com"

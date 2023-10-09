@@ -74,5 +74,27 @@ Templating is also possible e.g. `secret/data/{{identity.entity.id}}/*`.
 
 Since Vault 1.10, tokens are prefixed by:
 - `hvs`, if a service token.
-- `hvb`, if a batch token.
+- `hvb`, if a batch token. Unlike other tokens, **batch tokens aren't written to storage**.
 - `hvr`, if a recovery token.
+
+Tokens can also be bound by CIDR blocks, which specify that the token should only be authorized if the request comes from the specified range of addresses.
+
+The **root token should be deleted after the initial setup**.
+
+## Authenticate via the API and store the resulting token
+
+```bash
+# Store the token in a file
+curl --request POST --data @payload.json http://127.0.0.1:8200/v1/auth/userpass/login/bryan | jq -r ".auth.client_token" > token.txt
+
+# Store the token in an environment variable
+OUTPUT=$(curl --request POST --data @payload.json http://127.0.0.1:8200/v1/auth/userpass/login/bryan)
+
+VAULT_TOKEN=$(echo $OUTPUT | jq -r ".auth.client_token" -j)
+```
+
+## Get data using the X-Vault-Token HTTP header
+
+```bash
+curl --header "X-Vault-Token: ${VAULT_TOKEN}" --request GET https://127.0.0.1:8200/v1/secret/data/apikey/splunk
+```
