@@ -65,3 +65,14 @@ The `+` character supports wildcard matching for a single directory in the path,
 - `kv/data/apps/dev/webapp`
 - `kv/data/apps/qa/webapp`
 - `kv/data/apps/prod/webapp`
+
+Multiple `+` can be used e.g. `secret/+/+/webapp`.
+
+Templating is also possible e.g. `secret/data/{{identity.entity.id}}/*`.
+
+# Tokens
+
+Since Vault 1.10, tokens are prefixed by:
+- `hvs`, if a service token.
+- `hvb`, if a batch token.
+- `hvr`, if a recovery token.
